@@ -26,8 +26,8 @@ type state struct {
 }
 
 type board struct {
-	Data  data
-	State state
+	data  data
+	state state
 }
 
 func newBoard() board {
@@ -57,10 +57,10 @@ func newBoard() board {
 	}
 
 	return board{
-		Data: data{
+		data: data{
 			lists: lists,
 		},
-		State: state{
+		state: state{
 			listIdx: 0,
 		},
 	}
@@ -77,35 +77,35 @@ func (b board) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c":
 			return b, tea.Quit
 		case "h":
-			if b.State.listIdx > 0 {
-				b.State.listIdx--
+			if b.state.listIdx > 0 {
+				b.state.listIdx--
 			}
 		case "l":
-			if b.State.listIdx < len(b.Data.lists)-1 {
-				b.State.listIdx++
+			if b.state.listIdx < len(b.data.lists)-1 {
+				b.state.listIdx++
 			}
 		}
 	case tea.WindowSizeMsg:
 		// size all lists equally
 		h, v := DocStyle.GetFrameSize()
-		width := (msg.Width - h) / len(b.Data.lists)
+		width := (msg.Width - h) / len(b.data.lists)
 		height := msg.Height - v
-		for i := range b.Data.lists {
-			b.Data.lists[i].SetSize(width, height)
+		for i := range b.data.lists {
+			b.data.lists[i].SetSize(width, height)
 		}
 	}
 
 	// only update the focused list
 	var cmd tea.Cmd
-	b.Data.lists[b.State.listIdx], cmd = b.Data.lists[b.State.listIdx].Update(msg)
+	b.data.lists[b.state.listIdx], cmd = b.data.lists[b.state.listIdx].Update(msg)
 	return b, cmd
 }
 
 func (b board) View() string {
 	var views []string
-	for i := range b.Data.lists {
-		m := b.Data.lists[i]
-		if i == b.State.listIdx {
+	for i := range b.data.lists {
+		m := b.data.lists[i]
+		if i == b.state.listIdx {
 			m.SetDelegate(BaseDelegate)
 			views = append(views, FocusedStyle.Render(m.View()))
 		} else {
