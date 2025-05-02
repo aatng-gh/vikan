@@ -95,7 +95,7 @@ func (b board) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	// only update the focused list
+	// only update selected list
 	var cmd tea.Cmd
 	b.data.lists[b.state.listIdx], cmd = b.data.lists[b.state.listIdx].Update(msg)
 	return b, cmd
